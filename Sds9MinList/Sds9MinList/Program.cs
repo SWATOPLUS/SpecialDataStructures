@@ -110,9 +110,10 @@ namespace Sds9MinList
                     var items = _backStack
                         .Take(_backStack.Count - 1)
                         .Select(x => x.Item)
+                        .Reverse()
                         .ToArray();
 
-                    Rebase(ReverseArray(items));
+                    Rebase(items);
                 }
             }
 
@@ -133,21 +134,21 @@ namespace Sds9MinList
                 }
             }
 
-            private void Rebase(T[] cutItems)
+            private void Rebase(IReadOnlyList<T> items)
             {
-                var frontItemsCount = cutItems.Length / 2;
-
                 _frontStack.Clear();
                 _backStack.Clear();
 
-                foreach (var item in ReverseArray(cutItems.Take(frontItemsCount).ToArray()))
+                var frontItemsCount = items.Count / 2;
+
+                for (var i = frontItemsCount - 1; i > -1; i--)
                 {
-                    PushFront(item);
+                    PushFront(items[i]);
                 }
 
-                foreach (var item in cutItems.Skip(frontItemsCount))
+                for (var i = frontItemsCount; i < items.Count; i++)
                 {
-                    PushBack(item);
+                    PushBack(items[i]);
                 }
             }
 
@@ -168,18 +169,6 @@ namespace Sds9MinList
                 return items.Count > 0
                     ? items.Min()
                     : null as T?;
-            }
-
-            private static T[] ReverseArray(T[] array)
-            {
-                var result = new T[array.Length];
-
-                for (var i = 0; i < array.Length; i++)
-                {
-                    result[i] = array[array.Length - 1 - i];
-                }
-
-                return result;
             }
         }
 
