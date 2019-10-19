@@ -6,9 +6,18 @@ namespace Sds9MinList
 {
     internal class Program
     {
-        private static void Main()
+        private static void Main(string[] args)
         {
-            var list = new StackMinList<int>();
+            IMinList<int> list;
+
+            if (args.FirstOrDefault() == "linked")
+            {
+                list = new LinkedMinList<int>();
+            }
+            else
+            {
+                list = new StackMinList<int>();
+            }
 
             var commandCountLine = Console.ReadLine() ?? throw new InvalidOperationException();
             var commandCount = int.Parse(commandCountLine.Trim());
