@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds9MinList": {
+      "commandName": "Project",
+      "commandLineArgs": "< $(ProjectDir)input.txt > $(ProjectDir)output.txt "
+    }
+  }
+}

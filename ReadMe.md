@@ -1,0 +1,1 @@
+To simply override standard I/O by files in Visual Studio go at ``` Project > Properties > Debug ```Set ` Application Arguments ` as ``` < $(ProjectDir)input.txt > $(ProjectDir)output.txt ```
