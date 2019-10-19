@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Sds9MinList
 {
@@ -21,6 +22,8 @@ namespace Sds9MinList
 
             var commandCountLine = Console.ReadLine() ?? throw new InvalidOperationException();
             var commandCount = int.Parse(commandCountLine.Trim());
+
+            var outputBuilder = new StringBuilder();
 
             foreach (var _ in Enumerable.Range(0, commandCount))
             {
@@ -46,8 +49,12 @@ namespace Sds9MinList
                         throw new InvalidOperationException();
                 }
 
-                Console.WriteLine(list.GetMin() ?? -1);
+                var min = list.GetMin() ?? -1;
+
+                outputBuilder.AppendLine(min.ToString());
             }
+
+            Console.Write(outputBuilder.ToString());
         }
 
         private interface IMinList<T> where T : struct, IEquatable<T>
