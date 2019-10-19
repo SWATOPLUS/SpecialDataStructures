@@ -94,42 +94,46 @@ namespace Sds9MinList
 
             public void PopFront()
             {
-                if (_frontStack.Any())
+                if (_frontStack.Count > 0)
                 {
                     _frontStack.Pop();
                 }
                 else
                 {
-                    CutAndRebase(true);
+                    var items = _backStack
+                        .Take(_backStack.Count - 1)
+                        .Select(x => x.Item)
+                        .ToArray();
+
+                    Rebase(ReverseArray(items));
                 }
             }
 
             public void PopBack()
             {
-                if (_backStack.Any())
+                if (_backStack.Count > 0)
                 {
                     _backStack.Pop();
                 }
                 else
                 {
-                    CutAndRebase(false);
+                    var items = _frontStack
+                        .Take(_frontStack.Count - 1)
+                        .Select(x => x.Item)
+                        .ToArray();
+
+                    Rebase(items);
                 }
             }
 
-            private void CutAndRebase(bool isFront)
+            private void Rebase(T[] cutItems)
             {
-                var items = _frontStack.Concat(_backStack.Reverse()).ToArray();
-
-                var cutItems = isFront
-                    ? items.Skip(1).Select(x => x.Item).ToArray()
-                    : items.Take(items.Length - 1).Select(x => x.Item).ToArray();
-
                 var frontItemsCount = cutItems.Length / 2;
 
                 _frontStack.Clear();
                 _backStack.Clear();
 
-                foreach (var item in cutItems.Take(frontItemsCount).Reverse())
+                foreach (var item in ReverseArray(cutItems.Take(frontItemsCount).ToArray()))
                 {
                     PushFront(item);
                 }
@@ -157,6 +161,18 @@ namespace Sds9MinList
                 return items.Count > 0
                     ? items.Min()
                     : null as T?;
+            }
+
+            private static T[] ReverseArray(T[] array)
+            {
+                var result = new T[array.Length];
+
+                for (var i = 0; i < array.Length; i++)
+                {
+                    result[i] = array[array.Length - 1 - i];
+                }
+
+                return result;
             }
         }
 
