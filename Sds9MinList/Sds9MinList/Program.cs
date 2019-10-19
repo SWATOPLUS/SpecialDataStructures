@@ -129,12 +129,12 @@ namespace Sds9MinList
                 _frontStack.Clear();
                 _backStack.Clear();
 
-                foreach (var item in cutItems.Take(frontItemsCount))
+                foreach (var item in cutItems.Take(frontItemsCount).Reverse())
                 {
                     PushFront(item);
                 }
 
-                foreach (var item in cutItems.Skip(frontItemsCount).Reverse())
+                foreach (var item in cutItems.Skip(frontItemsCount))
                 {
                     PushBack(item);
                 }
