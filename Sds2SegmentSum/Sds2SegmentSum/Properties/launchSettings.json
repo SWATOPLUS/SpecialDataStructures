@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds2SegmentSum": {
+      "commandName": "Project",
+      "commandLineArgs": "< $(ProjectDir)input.txt > $(ProjectDir)output.txt"
+    }
+  }
+}
