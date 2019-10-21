@@ -47,7 +47,7 @@ namespace Sds2SegmentSum
                     .Select(int.Parse)
                     .ToArray();
 
-                var result = null as int?;
+                var result = null as long?;
 
                 switch (query[0])
                 {
@@ -82,18 +82,18 @@ namespace Sds2SegmentSum
 
             void IncrementByRange(int start, int end);
 
-            int GetEvenSumByRange(int start, int end);
+            long GetEvenSumByRange(int start, int end);
 
-            int GetOddSumByRange(int start, int end);
+            long GetOddSumByRange(int start, int end);
         }
 
         private class TrivialSegmentTree : ISegmentTree
         {
-            private readonly int[] _items;
+            private readonly long[] _items;
 
             public TrivialSegmentTree(int size)
             {
-                _items = new int[size];
+                _items = new long[size];
             }
 
             public void SetByIndex(int index, int value)
@@ -109,7 +109,7 @@ namespace Sds2SegmentSum
                 }
             }
 
-            public int GetEvenSumByRange(int start, int end)
+            public long GetEvenSumByRange(int start, int end)
             {
                 return Enumerable.Range(start, end - start + 1)
                     .Select(x => _items[x])
@@ -117,7 +117,7 @@ namespace Sds2SegmentSum
                     .Sum();
             }
 
-            public int GetOddSumByRange(int start, int end)
+            public long GetOddSumByRange(int start, int end)
             {
                 return Enumerable.Range(start, end - start + 1)
                     .Select(x => _items[x])
