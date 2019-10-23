@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds45MegaInversions": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}
