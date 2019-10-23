@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds36Stars": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}
