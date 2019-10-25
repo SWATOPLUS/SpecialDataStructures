@@ -8,14 +8,20 @@ namespace Sds2SegmentSum.TestGenerator
     internal class Program
     {
         private const string OutputFileName = "input.txt";
-        private const int QueryCount = 100_000;
-        private const int TreeSize = 100_000;
+        private static int QueryCount = 100_000;
+        private static int TreeSize = 100_000;
         private const int ElementSize = 1_000_000_000;
 
         private static readonly Random Random = new Random(42);
 
-        private static void Main()
+        private static void Main(string[] args)
         {
+            if (args.Length == 2)
+            {
+                QueryCount = int.Parse(args[0]);
+                TreeSize = int.Parse(args[1]);
+            }
+
             var elements = BuildRandomElements();
             var commands = Enumerable.Range(0, QueryCount)
                 .Select(x => BuildRandomCommand());
