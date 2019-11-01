@@ -62,7 +62,7 @@ namespace Sds1Bag
                 var flags = new bool[items.Count];
 
                 var best = Array.Empty<int>();
-                var bestCost = 0;
+                var bestCost = 0L;
 
                 while (IncrementFlags(flags))
                 {
@@ -91,7 +91,6 @@ namespace Sds1Bag
                         .ToArray();
                 }
 
-
                 return best;
             }
 
@@ -118,11 +117,11 @@ namespace Sds1Bag
 
         private class BagItem
         {
-            public int Size { get; }
+            public long Size { get; }
 
-            public int Cost { get; }
+            public long Cost { get; }
 
-            public BagItem(int size, int cost)
+            public BagItem(long size, long cost)
             {
                 Size = size;
                 Cost = cost;

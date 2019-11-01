@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds1Bag.TestGenerator": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}
