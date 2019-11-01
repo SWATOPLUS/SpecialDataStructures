@@ -46,6 +46,7 @@ namespace Sds10KingKonReception.TestGenerator
                         result = $"? {Random.Next(1, MaxInTime + 1)}";
                         break;
                     case 1:
+					    /*
                         var possibleInTimes = Enumerable
                             .Range(1, MaxInTime)
                             .Except(inTimes.Keys)
@@ -53,6 +54,15 @@ namespace Sds10KingKonReception.TestGenerator
 
                         var inTimeIndex = Random.Next(possibleInTimes.Length);
                         var inTime = possibleInTimes[inTimeIndex];
+						*/
+						
+						var inTime = Random.Next(1, MaxInTime + 1);
+					
+						while(inTimes.ContainsKey(inTime))
+                        {
+                            inTime = Random.Next(1, MaxInTime + 1);
+                        }
+						
                         inTimes.Add(inTime, index);
 
                         result = $"+ {inTime} {Random.Next(1, MaxDurationTime + 1)}";

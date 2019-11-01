@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Sds10KingKonReception": {
+      "commandName": "Project",
+      "commandLineArgs": "< input.txt > output.txt",
+      "workingDirectory": "."
+    }
+  }
+}
