@@ -66,7 +66,7 @@ namespace Sds7DistanceSum
             private static long GetDistanceSquareSum(bool[][] graph, int startIndex)
             {
                 var size = graph.Length;
-                var stack = new Stack<int>();
+                var queue = new Queue<int>();
 
                 var distance = Enumerable.Range(0, size)
                     .Select(x => null as long?)
@@ -74,11 +74,11 @@ namespace Sds7DistanceSum
 
 
                 distance[startIndex] = 0;
-                stack.Push(startIndex);
+                queue.Enqueue(startIndex);
 
-                while (stack.Any())
+                while (queue.Any())
                 {
-                    var currentIndex = stack.Pop();
+                    var currentIndex = queue.Dequeue();
                     var currentDistance = distance[currentIndex];
 
                     foreach (var index in Enumerable.Range(0, size))
@@ -86,7 +86,7 @@ namespace Sds7DistanceSum
                         if (graph[currentIndex][index] && distance[index] == null)
                         {
                             distance[index] = currentDistance + 1;
-                            stack.Push(index);
+                            queue.Enqueue(index);
                         }
                     }
                 }

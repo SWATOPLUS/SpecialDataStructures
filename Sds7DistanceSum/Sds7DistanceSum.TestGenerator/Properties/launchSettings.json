@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds7DistanceSum.TestGenerator": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}
