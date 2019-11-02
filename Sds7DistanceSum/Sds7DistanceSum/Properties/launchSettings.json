@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds7DistanceSum": {
+      "commandName": "Project",
+      "commandLineArgs": "< $(ProjectDir)input.txt > $(ProjectDir)output.txt"
+    }
+  }
+}
