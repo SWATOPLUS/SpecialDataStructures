@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ namespace Sds1Bag
             }
             else
             {
-                bagFiller = new TrivialBagFiller();
+                bagFiller = new BinaryBagFiller();
             }
 
             var items = new BagItem[itemCount];
@@ -115,7 +116,241 @@ namespace Sds1Bag
             }
         }
 
-        private class BagItem
+        private class BinaryBagFiller : IBagFiller
+        {
+            public class BagItemSet : IComparable<BagItemSet>, IEnumerable<int>
+            {
+                public BitArray FirstPart;
+                public BitArray SecondPart;
+                public long Size;
+                public long Cost;
+                public int HigherIndex;
+
+                public BagItemSet(BitArray mask, long size, long cost, int higherIndex)
+                {
+                    FirstPart = new BitArray(mask);
+                    SecondPart = new BitArray(mask.Length);
+                    Size = size;
+                    Cost = cost;
+                    HigherIndex = higherIndex;
+                }
+
+                public BagItemSet(int count, long size, long cost, int higherIndex)
+                {
+                    FirstPart = new BitArray(count);
+                    SecondPart = new BitArray(count);
+                    Size = size;
+                    Cost = cost;
+                    HigherIndex = higherIndex;
+                }
+
+                public int CompareTo(BagItemSet other)
+                {
+                    return Size.CompareTo(other.Size);
+                }
+
+                public IEnumerator<int> GetEnumerator()
+                {
+                    var count = FirstPart.Count;
+                    var firstSetCount = count / 2;
+                    var secondSetCount = count - firstSetCount;
+
+                    for (var i = 0; i < firstSetCount; i++)
+                    {
+                        if (FirstPart[i])
+                        {
+                            yield return i;
+                        }
+                    }
+
+                    for (var j = 0; j < secondSetCount; j++)
+                    {
+                        if (SecondPart[j])
+                        {
+                            yield return j + firstSetCount;
+                        }
+                    }
+                }
+
+                IEnumerator IEnumerable.GetEnumerator()
+                {
+                    return GetEnumerator();
+                }
+            }
+
+            public int[] FillBag(IReadOnlyList<BagItem> items, int bagSize)
+            {
+                var firstPartCount = items.Count / 2;
+                var secondPartCount = items.Count - firstPartCount;
+
+                var currentCost = 0L;
+                var currentSize = 0L;
+
+                var firstMask = new BitArray(items.Count);
+                var secondMask = new BitArray(items.Count);
+
+                var possibleSets = new List<BagItemSet>();
+                var bestSet = new BagItemSet(items.Count, 0L, 0L, -1);
+
+                for (var setMask = 0; setMask < Math.Pow(2, firstPartCount); setMask++)
+                {
+                    var index = GetLowestBit(setMask);
+
+                    if (setMask == 0)
+                    {
+                        possibleSets.Add(new BagItemSet(firstMask, currentSize, currentCost, -1));
+                        continue;
+                    }
+
+                    firstMask[index] = !firstMask[index];
+
+                    if (firstMask[index])
+                    {
+                        currentCost += items[index].Cost;
+                        currentSize += items[index].Size;
+                    }
+                    else
+                    {
+                        currentCost -= items[index].Cost;
+                        currentSize -= items[index].Size;
+                    }
+
+                    possibleSets.Add(new BagItemSet(firstMask, currentSize, currentCost, -1));
+                }
+
+                possibleSets.Sort();
+
+                var maxCurrentIndex = 0;
+                var maxCurrentPrice = 0L;
+
+                for (var j = 0; j < possibleSets.Count; j++)
+                {
+                    if (possibleSets[j].Cost > maxCurrentPrice)
+                    {
+                        maxCurrentPrice = possibleSets[j].Cost;
+                        maxCurrentIndex = j;
+                    }
+                    else if (possibleSets[j].Cost < maxCurrentPrice)
+                    {
+                        possibleSets[j].HigherIndex = maxCurrentIndex;
+                    }
+
+                }
+
+                currentCost = 0L;
+                currentSize = 0L;
+
+                for (var setMask = 0; setMask < Math.Pow(2, secondPartCount); setMask++)
+                {
+                    var lowestIndex = GetLowestBit(setMask);
+
+                    if (setMask == 0)
+                    {
+                        var maxIndex = GetMaxWeightIndex(possibleSets, currentSize, bagSize);
+
+                        if (possibleSets[maxIndex].HigherIndex >= 0)
+                        {
+                            maxIndex = possibleSets[maxIndex].HigherIndex;
+                        }
+
+                        if (possibleSets[maxIndex].Size <= bagSize - currentSize &&
+                            possibleSets[maxIndex].Cost + currentCost > bestSet.Cost)
+                        {
+                            bestSet.Cost = possibleSets[maxIndex].Cost + currentCost;
+                            bestSet.Size = possibleSets[maxIndex].Size + currentSize;
+                            bestSet.FirstPart = new BitArray(possibleSets[maxIndex].FirstPart);
+                            bestSet.SecondPart = new BitArray(secondMask);
+                        }
+
+                        continue;
+                    }
+
+                    secondMask[lowestIndex] = !secondMask[lowestIndex];
+
+                    if (secondMask[lowestIndex])
+                    {
+                        currentCost += items[lowestIndex + firstPartCount].Cost;
+                        currentSize += items[lowestIndex + firstPartCount].Size;
+                    }
+                    else
+                    {
+                        currentCost -= items[lowestIndex + firstPartCount].Cost;
+                        currentSize -= items[lowestIndex + firstPartCount].Size;
+                    }
+                    
+                    var maxWeightIndex = GetMaxWeightIndex(possibleSets, currentSize, bagSize);
+
+                    if (maxWeightIndex < 0)
+                    {
+                        continue;
+                    }
+
+                    if (possibleSets[maxWeightIndex].HigherIndex >= 0)
+                    {
+                        maxWeightIndex = possibleSets[maxWeightIndex].HigherIndex;
+                    }
+
+                    if (possibleSets[maxWeightIndex].Size <= bagSize - currentSize &&
+                        possibleSets[maxWeightIndex].Cost + currentCost > bestSet.Cost)
+                    {
+                        bestSet.Cost = possibleSets[maxWeightIndex].Cost + currentCost;
+                        bestSet.Size = possibleSets[maxWeightIndex].Size + currentSize;
+                        bestSet.FirstPart = new BitArray(possibleSets[maxWeightIndex].FirstPart);
+                        bestSet.SecondPart = new BitArray((secondMask));
+                    }
+                }
+
+                return bestSet.ToArray();
+            }
+
+            private static int GetMaxWeightIndex(IReadOnlyList<BagItemSet> itemSets, long currentSize, long bagSize)
+            {
+                if (currentSize > bagSize)
+                {
+                    return -1;
+                }
+
+                var left = 0;
+                var right = itemSets.Count - 1;
+
+                while (left <= right)
+                {
+                    var middle = (left + right) / 2;
+
+                    if (itemSets[middle].Size > bagSize - currentSize)
+                    {
+                        right = middle - 1;
+                    }
+                    else
+                    {
+                        left = middle + 1;
+                    }
+                }
+
+                return right;
+            }
+
+            private static int GetLowestBit(int cluster)
+            {
+                if (cluster == 0)
+                {
+                    return 0;
+                }
+
+                var mask = 1;
+                var index = 0;
+
+                while ((mask & cluster) == 0)
+                {
+                    mask <<= 1;
+                    index++;
+                }
+
+                return index;
+            }
+        }
+
+        private struct BagItem
         {
             public long Size { get; }
 
