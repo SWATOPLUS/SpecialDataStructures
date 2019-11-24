@@ -13,7 +13,7 @@ namespace Sds4PersistentSegmentTree.TestGenerator
         private static int QueryCount = 200_000;
         private static int ItemSize = 1_000_000;
 
-        private static readonly Random Random = new Random(42);
+        private static readonly Random Random = new Random();
 
         private static void Main(string[] args)
         {

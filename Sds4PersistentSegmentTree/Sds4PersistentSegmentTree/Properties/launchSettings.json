@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Sds4PersistentSegmentTree": {
+      "commandName": "Project",
+      "commandLineArgs": "< input.txt > output.txt",
+      "workingDirectory": "."
+    }
+  }
+}
