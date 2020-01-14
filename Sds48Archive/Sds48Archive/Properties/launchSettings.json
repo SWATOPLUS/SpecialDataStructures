@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sds48Archive": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}
