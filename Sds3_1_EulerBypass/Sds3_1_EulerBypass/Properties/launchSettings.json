@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Sds3_1_EulerBypass": {
+      "commandName": "Project",
+      "commandLineArgs": "< input.txt > output.txt",
+      "workingDirectory": "."
+    }
+  }
+}
